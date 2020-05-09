@@ -3,16 +3,18 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
 class TransactionList extends StatelessWidget {
-
   List<Transaction> transactions;
 
   TransactionList(this.transactions);
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      children: <Widget>[
-        ...transactions.map((tr) {
+    return Container(
+      height: 350,
+      child: ListView.builder(
+        itemCount: transactions.length,
+        itemBuilder: (context, index) {
+          final tr = transactions[index];
           return Card(
             child: Row(
               children: <Widget>[
@@ -22,10 +24,11 @@ class TransactionList extends StatelessWidget {
                     vertical: 10,
                   ),
                   decoration: BoxDecoration(
-                      border: Border.all(
-                        color: Colors.purple,
-                        width: 2,
-                      )),
+                    border: Border.all(
+                      color: Colors.purple,
+                      width: 2,
+                    ),
+                  ),
                   padding: EdgeInsets.all(10),
                   child: Text(
                     'R\$ ${tr.value.toStringAsFixed(2)}',
@@ -48,7 +51,6 @@ class TransactionList extends StatelessWidget {
                     ),
                     Text(
                       DateFormat('d MMM y').format(tr.date),
-
                       style: TextStyle(
                         color: Colors.grey[600],
                       ),
@@ -58,8 +60,8 @@ class TransactionList extends StatelessWidget {
               ],
             ),
           );
-        }).toList(),
-      ],
+        },
+      ),
     );
   }
 }
