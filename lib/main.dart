@@ -5,7 +5,6 @@ import 'package:expenses/models/transaction.dart';
 import 'package:expenses/components/transaction_form.dart';
 import 'package:expenses/components/transaction_list.dart';
 
-
 void main() => runApp(ExpensesApp());
 
 class ExpensesApp extends StatelessWidget {
@@ -19,24 +18,20 @@ class ExpensesApp extends StatelessWidget {
         accentColor: Colors.amber[500],
         fontFamily: 'Quicksand',
         textTheme: ThemeData.light().textTheme.copyWith(
-          title: TextStyle(
-              fontFamily: 'OpenSans',
-              fontSize: 18,
-              fontWeight: FontWeight.bold
+              title: TextStyle(
+                  fontFamily: 'OpenSans',
+                  fontSize: 18,
+                  fontWeight: FontWeight.bold),
+              button:
+                  TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
             ),
-            button:TextStyle(
-              color: Colors.white,
-              fontWeight: FontWeight.bold
-            ),
-        ),
         appBarTheme: AppBarTheme(
           textTheme: ThemeData.light().textTheme.copyWith(
-            title: TextStyle(
-              fontFamily: 'OpenSans',
-              fontSize: 20,
-              fontWeight: FontWeight.bold
-            ),
-          ),
+                title: TextStyle(
+                    fontFamily: 'OpenSans',
+                    fontSize: 20,
+                    fontWeight: FontWeight.bold),
+              ),
         ),
       ),
     );
@@ -44,24 +39,22 @@ class ExpensesApp extends StatelessWidget {
 }
 
 class MyHomePage extends StatefulWidget {
-
   @override
   _MyHomePageState createState() => _MyHomePageState();
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-
   final List<Transaction> _transactions = [];
 
-  List<Transaction> get _recentTransactions{
-    return _transactions.where((tr){
+  List<Transaction> get _recentTransactions {
+    return _transactions.where((tr) {
       return tr.date.isAfter(DateTime.now().subtract(
         Duration(days: 7),
       ));
     }).toList();
   }
 
-  _addTransaction(String title, double value, DateTime date){
+  _addTransaction(String title, double value, DateTime date) {
     final newTransaction = Transaction(
       id: Random().nextDouble().toString(),
       title: title,
@@ -75,48 +68,58 @@ class _MyHomePageState extends State<MyHomePage> {
     Navigator.of(context).pop();
   }
 
-  _removeTransaction(String id){
+  _removeTransaction(String id) {
     setState(() {
       _transactions.removeWhere((tr) => tr.id == id);
-      
     });
   }
 
-  _openTransactionFormModal(BuildContext context){
+  _openTransactionFormModal(BuildContext context) {
     showModalBottomSheet(
-      context: context, 
-      builder: (_){
-        return TransactionForm(_addTransaction);
-      });
+        context: context,
+        builder: (_) {
+          return TransactionForm(_addTransaction);
+        });
   }
 
   @override
   Widget build(BuildContext context) {
+    var aapBar = AppBar(
+      title: Text(
+        "Despesas Pessoais",
+        style: TextStyle(),
+      ),
+      actions: <Widget>[
+        IconButton(
+            icon: Icon(Icons.add),
+            onPressed: () => _openTransactionFormModal(context)),
+      ],
+    );
+
+    final availableHeight = MediaQuery.of(context).size.height -
+        aapBar.preferredSize.height -
+        MediaQuery.of(context).padding.top;
     // TODO: implement build
     return Scaffold(
-      appBar: AppBar(
-        title: Text(
-          "Despesas Pessoais",
-          style: TextStyle(),
-          ),
-        actions: <Widget>[
-          IconButton(icon: Icon(Icons.add), 
-                     onPressed: ()=> _openTransactionFormModal(context)),
-        ],
-      ),
+      appBar: aapBar,
       body: SingleChildScrollView(
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: <Widget>[
-            Chart(_recentTransactions),
-            TransactionList(_transactions,_removeTransaction),
+            Container(
+              height: availableHeight * 0.3,
+              child: Chart(_recentTransactions),
+            ),
+            Container(
+              height: availableHeight * 0.7,
+              child: TransactionList(_transactions, _removeTransaction),
+            ),
           ],
         ),
       ),
       floatingActionButton: FloatingActionButton(
-        child: Icon(Icons.add),
-        onPressed: ()=> _openTransactionFormModal(context)
-      ) ,
+          child: Icon(Icons.add),
+          onPressed: () => _openTransactionFormModal(context)),
       floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
     );
   }
