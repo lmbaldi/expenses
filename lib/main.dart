@@ -85,7 +85,8 @@ class _MyHomePageState extends State<MyHomePage> {
 
   @override
   Widget build(BuildContext context) {
-    bool isLandscape = MediaQuery.of(context).orientation == Orientation.landscape;
+    final mediaQuery = MediaQuery.of(context);
+    bool isLandscape = mediaQuery.orientation == Orientation.landscape;
 
     var aapBar = AppBar(
       title: Text(
@@ -93,27 +94,25 @@ class _MyHomePageState extends State<MyHomePage> {
         style: TextStyle(),
       ),
       actions: <Widget>[
-        if(isLandscape)
-        IconButton(
-          icon: Icon(_showChart ? Icons.list : Icons.show_chart),
-          onPressed: () {
-            setState(() {
-              _showChart = !_showChart;
-            });
-          },
-        ),
+        if (isLandscape)
+          IconButton(
+            icon: Icon(_showChart ? Icons.list : Icons.show_chart),
+            onPressed: () {
+              setState(() {
+                _showChart = !_showChart;
+              });
+            },
+          ),
         IconButton(
           icon: Icon(Icons.add),
           onPressed: () => _openTransactionFormModal(context),
         ),
-        
       ],
     );
 
-    final availableHeight = MediaQuery.of(context).size.height -
+    final availableHeight = mediaQuery.size.height -
         aapBar.preferredSize.height -
-        MediaQuery.of(context).padding.top;
-    // TODO: implement build
+        mediaQuery.padding.top;
     return Scaffold(
       appBar: aapBar,
       body: SingleChildScrollView(
@@ -126,7 +125,7 @@ class _MyHomePageState extends State<MyHomePage> {
             //   children: <Widget>[
             //     Text("Exibir Gráfico"),
             //     Switch(
-            //       value: _showChart, 
+            //       value: _showChart,
             //       onChanged: (value){
             //         setState(() {
             //           _showChart = value;
@@ -135,14 +134,14 @@ class _MyHomePageState extends State<MyHomePage> {
             //     ),
             //   ],
             // ),
-            if(_showChart || !isLandscape )
+            if (_showChart || !isLandscape)
               Container(
-                height: availableHeight * (isLandscape ? 0.7: 0.3),
+                height: availableHeight * (isLandscape ? 0.7 : 0.3),
                 child: Chart(_recentTransactions),
               ),
-            if(!_showChart || !isLandscape)  
+            if (!_showChart || !isLandscape)
               Container(
-                height: availableHeight * 0.65,
+                height: availableHeight * (isLandscape ? 1 : 0.7),
                 child: TransactionList(_transactions, _removeTransaction),
               ),
           ],
